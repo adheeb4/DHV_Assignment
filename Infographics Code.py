@@ -19,37 +19,94 @@ def read_data(filename):
 
 
 Countries_list = ["United Kingdom", "China", "United States",
-                  "India", "Indonesia", "Thailand", "Bangladesh"]
+                  "India", "Thailand", "Bangladesh"]
 
 electricity_access, electricity_access_t = read_data('Access to electricity (% of population).csv')
+electricity_access_t = electricity_access_t[:18]
 co2_emission, co2_emission_t = read_data('CO2 emissions (metric tons per capita).csv')
+co2_emission_t = co2_emission_t[:18]
+co2_emission_t = co2_emission_t.apply(pd.to_numeric)
 electricity_hydro, electricity_hydro_t = read_data('electricity_production_hydro.csv')
-electricity_hydro_t = electricity_hydro_t[:17]
+electricity_hydro_t = electricity_hydro_t[:18]
 electricity_hydro_t = electricity_hydro_t.apply(pd.to_numeric)
+
 electricity_nonrenewable, electricity_nonrenewable_t = read_data('electricity_production_nonrenewable.csv')
-electricity_nonrenewable_t = electricity_nonrenewable_t[:17]
+electricity_nonrenewable_t = electricity_nonrenewable_t[:18]
+electricity_nonrenewable_t = electricity_nonrenewable_t.apply(pd.to_numeric)
+
 electricity_nuclear, electricity_nuclear_t = read_data('electricity_production_nuclear.csv')
+electricity_nuclear_t = electricity_nuclear_t[:18]
+electricity_nuclear_t = electricity_nuclear_t.apply(pd.to_numeric)
+
 electricity_renewable, electricity_renewable_t = read_data('electricity_production_renewable.csv')
-'''
-fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(10, 6))
+electricity_renewable_t = electricity_renewable_t[:18]
+electricity_renewable_t = electricity_renewable_t.apply(pd.to_numeric)
 
+fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(30, 16))
+plt.suptitle("Comparison of CO2 Emissions and Electricity Production in Different Countries", size = 40)
 
 for i in range(len(Countries_list)):
-    ax[0, 0].plot(electricity_access_t.index, electricity_access_t[Countries_list[i]], label=Countries_list[i])
-    ax[0, 0].tick_params(axis='x', rotation=90)
-    '''
-plt.figure()
+    ax[0,0].plot(co2_emission_t.index, co2_emission_t[Countries_list[i]])
+    ax[0,0].set_title("CO\N{SUBSCRIPT TWO} emissions (metric tons per capita)", size=20)
+    ax[0,0].set_xticklabels(co2_emission_t.index, rotation=90)
+    ax[0,0].grid(True)
+    ax[0,0].set_xlabel("Year", size=16)
+    ax[0,0].set_ylabel("CO\N{SUBSCRIPT TWO} Emission\n (metric tons per capita)", size=16)
+    
 for i in range(len(Countries_list)):
-    plt.plot(electricity_hydro_t.index, electricity_hydro_t[Countries_list[i]])
-             
-"""
-plt.plot(electricity_hydro_t.index, electricity_hydro_t["United Kingdom"],
-         electricity_hydro_t["China"],electricity_hydro_t["United States"], 
-         electricity_hydro_t["India"], electricity_hydro_t["Indonesia"], 
-         electricity_hydro_t["Thailand"], electricity_hydro_t["Bangladesh"])
-"""
-plt.legend(Countries_list)
+    ax[0,1].plot(electricity_hydro_t.index, electricity_hydro_t[Countries_list[i]])
+    ax[0,1].set_title("Electricity production from \nhydroelectric sources (% of total)", size=20)
+    ax[0,1].set_xticklabels(electricity_hydro_t.index, rotation=90)
+    ax[0,1].grid(True)
+    ax[0,1].set_xlabel("Year", size=16)
+    ax[0,1].set_ylabel("Electricity production from \nhydroelectric sources (% of total)", size=16)
 
-#ax.yaxis.set_ticks(np.arange(0, 2047, 32))
-plt.xticks(rotation=90)
+for i in range(len(Countries_list)):
+    ax[0,2].plot(electricity_nonrenewable_t.index, electricity_nonrenewable_t[Countries_list[i]])
+    ax[0,2].set_title("Electricity production from\n oil, gas and coal sources (% of total)", size=20)
+    ax[0,2].set_xticklabels(electricity_nonrenewable_t.index, rotation=90)
+    ax[0,2].grid(True)
+    ax[0,2].set_xlabel("Year", size=16)
+    ax[0,2].set_ylabel("Electricity production from \noil, gas and coal sources (% of total)", size=16)
+    
+for i in range(len(Countries_list)):
+    ax[1,0].plot(electricity_nuclear_t.index, electricity_nuclear_t[Countries_list[i]])
+    ax[1,0].set_title("Electricity production from\n nuclear sources (% of total)", size=20)
+    ax[1,0].set_xticklabels(electricity_nuclear_t.index, rotation=90)
+    ax[1,0].grid(True)
+    ax[1,0].set_xlabel("Year", size=16)
+    ax[1,0].set_ylabel("Electricity production from\n nuclear sources (% of total)", size=16)
+    
+for i in range(len(Countries_list)):
+    ax[1,1].plot(electricity_renewable_t.index, electricity_renewable_t[Countries_list[i]])
+    ax[1,1].set_title("Electricity production from renewable sources,\n excluding hydroelectric (% of total)", size=20)
+    ax[1,1].set_xticklabels(electricity_renewable_t.index, rotation=90)
+    ax[1,1].grid(True)
+    ax[1,1].set_xlabel("Year", size=16)
+    ax[1,1].set_ylabel("Electricity production from renewable sources,\n excluding hydroelectric (% of total)", size=16)
+
+
+ax[1,2].remove()
+ax_legend = fig.add_subplot(2, 2, 4)
+ax[0,0].legend(Countries_list, fontsize=23, bbox_to_anchor=(3.29,-.2))
+ax_legend.axis('off')
+
+
 plt.show()
+
+plt.figure()
+mean_co2_list = [np.mean(co2_emission_t["United Kingdom"]),
+                 np.mean(co2_emission_t["China"]),
+                 np.mean(co2_emission_t["United States"]),
+                 np.mean(co2_emission_t["India"]),
+                 np.mean(co2_emission_t["Thailand"]),
+                 np.mean(co2_emission_t["Bangladesh"])]
+                 
+plt.barh(Countries_list, mean_co2_list)
+plt.title("Mean CO\N{SUBSCRIPT TWO} Emissions of Different Countries from 1997 to 2014")
+plt.ylabel("Countries")
+plt.xlabel("CO\N{SUBSCRIPT TWO} Emission(metric tons per capita)")
+plt.show()
+                 
+                 
+                 
