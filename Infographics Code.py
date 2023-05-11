@@ -17,15 +17,27 @@ def read_data(filename):
     data_transposed = data_transposed.drop(index=["Series Name"])
     return data, data_transposed
 
-
 Countries_list = ["United Kingdom", "China", "United States",
                   "India", "Thailand", "Bangladesh"]
 
-electricity_access, electricity_access_t = read_data('Access to electricity (% of population).csv')
-electricity_access_t = electricity_access_t[:18]
+def mean(data_frame, country):
+    mean = np.mean(data_frame[country])
+    
+    return mean
+
+def median(data_frame, country):
+    median = np.median(data_frame[country[i]])
+
+    return median
+
+
+
+
+
 co2_emission, co2_emission_t = read_data('CO2 emissions (metric tons per capita).csv')
 co2_emission_t = co2_emission_t[:18]
 co2_emission_t = co2_emission_t.apply(pd.to_numeric)
+
 electricity_hydro, electricity_hydro_t = read_data('electricity_production_hydro.csv')
 electricity_hydro_t = electricity_hydro_t[:18]
 electricity_hydro_t = electricity_hydro_t.apply(pd.to_numeric)
@@ -44,6 +56,7 @@ electricity_renewable_t = electricity_renewable_t.apply(pd.to_numeric)
 
 fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(30, 16))
 plt.suptitle("Comparison of CO2 Emissions and Electricity Production in Different Countries", size = 40)
+plt.subplots_adjust(hspace=0.3)
 
 for i in range(len(Countries_list)):
     ax[0,0].plot(co2_emission_t.index, co2_emission_t[Countries_list[i]])
@@ -107,6 +120,22 @@ plt.title("Mean CO\N{SUBSCRIPT TWO} Emissions of Different Countries from 1997 t
 plt.ylabel("Countries")
 plt.xlabel("CO\N{SUBSCRIPT TWO} Emission(metric tons per capita)")
 plt.show()
-                 
-                 
+
+
+mean_data_us = [np.mean(electricity_hydro_t["United States"]), 
+                np.mean(electricity_nonrenewable_t["United States"]),
+                np.mean(electricity_nuclear_t["United States"]),
+                np.mean(electricity_renewable_t["United States"])]
+plt.figure()
+plt.pie(mean_data_us, autopct="%1.1f%%")
+plt.legend(bbox_to_anchor=(1,1) , 
+           labels=["Hydroelectric sources",
+                   "Oil, gas and coal sources", 
+                   "Nuclear sources", 
+                   "Renewable sources, \nexcluding hydroelectric"])
+plt.title("Pie Chart of Different Types of Elecricity Production \nin United States")
+plt.show()
+
+
+
                  
