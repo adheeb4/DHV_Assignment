@@ -33,9 +33,6 @@ def median(data_frame, country):
     return median
 
 
-
-
-
 co2_emission, co2_emission_t = read_data('CO2 emissions (metric tons per capita).csv')
 co2_emission_t = co2_emission_t[:18]
 co2_emission_t = co2_emission_t.apply(pd.to_numeric)
@@ -57,7 +54,6 @@ electricity_renewable_t = electricity_renewable_t[:18]
 electricity_renewable_t = electricity_renewable_t.apply(pd.to_numeric)
 
 fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(30, 16))
-plt.suptitle("Comparison of CO2 Emissions and Electricity Production in Different Countries", size = 40)
 plt.subplots_adjust(hspace=0.3)
 
 for i in range(len(Countries_list)):
@@ -103,7 +99,7 @@ for i in range(len(Countries_list)):
 
 ax[1,2].remove()
 ax_legend = fig.add_subplot(2, 2, 4)
-ax[0,0].legend(Countries_list, fontsize=23, bbox_to_anchor=(3.29,-.2))
+ax[0,0].legend(Countries_list, fontsize=23, bbox_to_anchor=(3.17,-0.4))
 ax_legend.axis('off')
 
 plt.savefig("image1.png", dpi=300, bbox_inches="tight")
@@ -118,7 +114,6 @@ mean_co2_list = [np.mean(co2_emission_t["United Kingdom"]),
                  np.mean(co2_emission_t["Bangladesh"])]
                  
 plt.barh(Countries_list, mean_co2_list)
-plt.title("Mean CO\N{SUBSCRIPT TWO} Emissions of Different Countries from 1997 to 2014")
 plt.ylabel("Countries")
 plt.xlabel("CO\N{SUBSCRIPT TWO} Emission(metric tons per capita)")
 plt.savefig("image2.png", dpi=300, bbox_inches="tight")
@@ -136,30 +131,60 @@ plt.legend(bbox_to_anchor=(1,1) ,
                    "Oil, gas and coal sources", 
                    "Nuclear sources", 
                    "Renewable sources, \nexcluding hydroelectric"])
-plt.title("Pie Chart of Different Types of Elecricity Production \nin United States")
 plt.savefig("image3.png", dpi=300, bbox_inches="tight")
 plt.show()
 
-fig = plt.figure(figsize=(10, 10))
-grid = gridspec.GridSpec(2, 3)
+dfi_us = pd.DataFrame(co2_emission_t.index)
+df1_us = pd.DataFrame(co2_emission_t["United States"]).rename(columns={"United States": "CO2 Emission"})
+df2_us = pd.DataFrame(electricity_hydro_t["United States"]).rename(columns={"United States": "Electricity Production(Hydro)"})
+df3_us = pd.DataFrame(electricity_nonrenewable_t["United States"]).rename(columns={"United States": "Electricity Production(Non Renewable)"})
+df4_us = pd.DataFrame(electricity_nuclear_t["United States"]).rename(columns={"United States": "Electricity Production(Nuclear)"})
+df5_us = pd.DataFrame(electricity_renewable_t["United States"]).rename(columns={"United States": "Electricity Production(Renewable)"})
+
+data_us= pd.concat([dfi_us, df1_us, df2_us, df3_us, df4_us, df5_us], axis=1)
+data_us.drop(data_us.index[:18], inplace=True)
+data_us.drop(data_us.columns[0], axis=1, inplace=True)
+
+plt.figure()
+corr = data_us.corr()
+sns.heatmap(corr, annot=True, linewidths=0, square=True, cmap='Blues')
+plt.savefig("image4.png", dpi=300, bbox_inches="tight")
+
+plt.show()
+
+
+fig = plt.figure(figsize=(6, 10))
+grid = gridspec.GridSpec(3, 2, figure=fig, wspace=0.1, hspace=0.1)
 
 image1 = imread('image1.png')
 image2 = imread('image2.png')
 image3 = imread('image3.png')
-#image4 = imread('image4.jpg')
+image4 = imread('image4.png')
 
 subplot1 = plt.subplot(grid[0, :])
 subplot1.imshow(image1)
 subplot1.axis('off')
-
+subplot1.set_title("Comparison of CO2 Emissions and Electricity Production\n in Different Countries")
 
 subplot2 = plt.subplot(grid[1, 0])
 subplot2.imshow(image2)
 subplot2.axis('off')
+subplot2.set_title("Mean CO\N{SUBSCRIPT TWO} Emissions of Different Countries\n from 1997 to 2014", fontsize=8)
 
 subplot3 = plt.subplot(grid[1, 1])
 subplot3.imshow(image3)
 subplot3.axis('off')
+subplot3.set_title("Pie Chart of Different Types of \nElecricity Production in United States", fontsize=8)
+
+subplot4 = plt.subplot(grid[2, 0])
+subplot4.imshow(image4)
+subplot4.axis('off')
+subplot4.set_title("Heatmap Comparing Different Kinds of \nElectricity Production in United States", fontsize=8)
+
+fig.suptitle("Impact of Different Kinds Electricity Production \non CO2 Emissions", fontsize=16)
+
+plt.tight_layout()
+plt.show()
 
 
 
