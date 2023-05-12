@@ -8,6 +8,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import matplotlib.gridspec as gridspec
+from matplotlib.image import imread
 
 
 def read_data(filename):
@@ -104,7 +106,7 @@ ax_legend = fig.add_subplot(2, 2, 4)
 ax[0,0].legend(Countries_list, fontsize=23, bbox_to_anchor=(3.29,-.2))
 ax_legend.axis('off')
 
-
+plt.savefig("image1.png", dpi=300, bbox_inches="tight")
 plt.show()
 
 plt.figure()
@@ -119,6 +121,7 @@ plt.barh(Countries_list, mean_co2_list)
 plt.title("Mean CO\N{SUBSCRIPT TWO} Emissions of Different Countries from 1997 to 2014")
 plt.ylabel("Countries")
 plt.xlabel("CO\N{SUBSCRIPT TWO} Emission(metric tons per capita)")
+plt.savefig("image2.png", dpi=300, bbox_inches="tight")
 plt.show()
 
 
@@ -134,7 +137,29 @@ plt.legend(bbox_to_anchor=(1,1) ,
                    "Nuclear sources", 
                    "Renewable sources, \nexcluding hydroelectric"])
 plt.title("Pie Chart of Different Types of Elecricity Production \nin United States")
+plt.savefig("image3.png", dpi=300, bbox_inches="tight")
 plt.show()
+
+fig = plt.figure(figsize=(10, 10))
+grid = gridspec.GridSpec(2, 3)
+
+image1 = imread('image1.png')
+image2 = imread('image2.png')
+image3 = imread('image3.png')
+#image4 = imread('image4.jpg')
+
+subplot1 = plt.subplot(grid[0, :])
+subplot1.imshow(image1)
+subplot1.axis('off')
+
+
+subplot2 = plt.subplot(grid[1, 0])
+subplot2.imshow(image2)
+subplot2.axis('off')
+
+subplot3 = plt.subplot(grid[1, 1])
+subplot3.imshow(image3)
+subplot3.axis('off')
 
 
 
