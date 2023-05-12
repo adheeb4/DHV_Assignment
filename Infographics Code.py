@@ -160,6 +160,7 @@ image1 = imread('image1.png')
 image2 = imread('image2.png')
 image3 = imread('image3.png')
 image4 = imread('image4.png')
+text_str = "The infographics dashboard aims to explore the impact of various types of electricity production on CO2 emissions in different countries. It presents visualizations and insights on CO2 emissions, electricity production from different sources, it also compares te electricity production from different sources in United States and their correlation where CO2 emission per capita is highest."
 
 subplot1 = plt.subplot(grid[0, :])
 subplot1.imshow(image1)
@@ -180,6 +181,10 @@ subplot4 = plt.subplot(grid[2, 0])
 subplot4.imshow(image4)
 subplot4.axis('off')
 subplot4.set_title("Heatmap Comparing Different Kinds of \nElectricity Production in United States", fontsize=8)
+
+subplot5 = plt.subplot(grid[2, 1])
+subplot5.axis('off')
+subplot5.text(0, 0, text_str, transform=subplot5.transAxes, ha='left', va='top', fontsize=10, wrap=True, multialignment='left')
 
 fig.suptitle("Impact of Different Kinds Electricity Production \non CO2 Emissions", fontsize=16)
 
